@@ -1,0 +1,23 @@
+
+u atlasprod /atlas:/scratch/ a
+u atlasprod /atlas:/data a
+
+u atlas /atlas:/scratch/ a
+u atlas /atlas:/data/ r
+
+
+#TEST+./acctest  -c /dev/null  atlasprod  nohost  rd  /atlas:/data/object+allowed+Production user, read own pool
+#TEST+./acctest  -c /dev/null  atlasprod  nohost  wr  /atlas:/data/object+allowed+Production user, write own pool
+#TEST+./acctest  -c /dev/null  atlasprod  nohost  rd  /atlas:/scratch/object+allowed+Production user, read other (subordinate)  pool
+#TEST+./acctest  -c /dev/null  atlasprod  nohost  wr  /atlas:/scratch/object+allowed+Production user, write other (subordinate) pool
+
+#
+#
+#
+#
+
+#TEST+./acctest  -c /dev/null  atlas  nohost  rd  /atlas:/scratch/object+allowed+Analysis user, read own pool
+#TEST+./acctest  -c /dev/null  atlas  nohost  wr  /atlas:/scratch/object+allowed+Analysis user, write own pool
+#TEST+./acctest  -c /dev/null  atlas  nohost  rd  /atlas:/data/object+allowed+Analysis user, read  other (superior)  pool
+#TEST+./acctest  -c /dev/null  atlas  nohost  wr  /atlas:/data/object+denied+Analysis user, write other (superior) pool (we check this is denied)
+
