@@ -45,18 +45,17 @@ int checkallowed(const char *user, const char* operation, const char* path, auth
 
   int isallowed = 0;
 
-  if (!strcmp(user, rec->user)) {  // User is explicitly mentioned in the rule for
-    
-    if (strstr(path, rec->path) == path) {  // path starts with rec->path at position 0, 
-                                            // (and the path relates to the user we have just matched)  
-           
-      if (!strcmp("wr", operation) && !strcmp("r", rec->priv)) {
-          // Disallow trying to WR ite but onlr R ead priv
-        isallowed = 0;
-      } else {
-        isallowed = 1;
-      }
+  if (!strcmp(user, rec->user) && strstr(path, rec->path) == path) { 
+    // path starts with rec->path at position 0, 
+    // (and the path relates to the user we have just matched)  
+
+    if (!strcmp("wr", operation) && !strcmp("r", rec->priv)) {
+      // Disallow trying to WR ite but onlr R ead priv
+      isallowed = 0;
+    } else {
+      isallowed = 1;
     }
+
   }
   return isallowed;
 }
