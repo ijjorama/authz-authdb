@@ -45,16 +45,18 @@ int checkallowed(const char *user, const char* operation, const char* path, auth
 
   int isallowed = 0;
 
-  if (!strcmp(user, rec->user) && strstr(path, rec->path) == path) { 
+  if (!strcmp(user, rec->user) && strstr(path, rec->path) == path )  { 
     // path starts with rec->path at position 0, 
     // (and the path relates to the user we have just matched)  
-
-    if (!strcmp("wr", operation) && !strcmp("r", rec->priv)) {
-      // Disallow trying to WR ite but onlr R ead priv
-      isallowed = 0;
-    } else {
-      isallowed = 1;
-    }
+    
+#define WRITE(operation) !strcmp("wr", operation)
+#define READONLY(priv) !strcmp("r", priv)
+         
+    if ( ! (WRITE(operation) && READONLY(rec->priv)) )  {     
+      // If we're not trying to write where we only have read access, allow this operation
+      fprintf(stderr, "operation = %s, priv = %s.\n", operation, rec->priv);
+      isallowed = 1;      
+    } 
 
   }
   return isallowed;
@@ -76,8 +78,8 @@ int checkaccess(const char* authdb, const int bufsize,
     if (buf[0] == '#' || isspace(buf[0])) {
       continue;
     }
-    
-    buf[strlen(buf)-1] = '\0';  // Zap trailing newline
+
+    buf[strlen(buf)-1] = '\0';
     
     authdbentry *rec = tokenize(buf);
     
@@ -97,7 +99,7 @@ int checkaccess(const char* authdb, const int bufsize,
 }
 
 int main(int argc, char** argv) {
-
+  
   char *user, *operation, *path;
 
   if (argc != 7) { // Set up some arguments
@@ -114,7 +116,7 @@ int main(int argc, char** argv) {
 
   }
 
-  int isallowed = checkaccess("/opt/xrd/etc/Authfile", 256, user, operation, path);
+  int isallowed = checkaccess("/opt/xrd/etc/Authfile", 500, user, operation, path);
   
   if (isallowed) {
     fprintf(stdout, "allowed\n");
