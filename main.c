@@ -54,7 +54,6 @@ int checkallowed(const char *user, const char* operation, const char* path, auth
          
     if ( ! (WRITE(operation) && READONLY(rec->priv)) )  {     
       // If we're not trying to write where we only have read access, allow this operation
-      fprintf(stderr, "operation = %s, priv = %s.\n", operation, rec->priv);
       isallowed = 1;      
     } 
 
